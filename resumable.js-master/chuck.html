@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>REST with Forms</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+          <script src="resumable.js"></script>
+		
+    </head>
+	<script>
+var r = new Resumable({
+  target: 'chuck.html'
+});
+
+
+r.assignBrowse(document.getElementById('browseButton'));
+
+r.on('fileSuccess', function(file){
+    console.debug('fileSuccess',file);
+  });
+r.on('fileProgress', function(file){
+    console.debug('fileProgress', file);
+  });
+r.on('fileAdded', function(file, event){
+    r.upload();
+    console.debug('fileAdded', event);
+  });
+r.on('filesAdded', function(array){
+    r.upload();
+    console.debug('filesAdded', array);
+  });
+r.on('fileRetry', function(file){
+    console.debug('fileRetry', file);
+  });
+r.on('fileError', function(file, message){
+    console.debug('fileError', file, message);
+  });
+r.on('uploadStart', function(){
+    console.debug('uploadStart');
+  });
+r.on('complete', function(){
+    console.debug('complete');
+  });
+r.on('progress', function(){
+    console.debug('progress');
+  });
+r.on('error', function(message, file){
+    console.debug('error', message, file);
+  });
+r.on('pause', function(){
+    console.debug('pause');
+  });
+r.on('cancel', function(){
+    console.debug('cancel');
+  });
+</script>
+<body>
+<a href="#" id="browseButton">Select files</a>
+<div class="container">
+            <form method="POST" enctype="multipart/form-data"
+                  action="http://localhost:8080/upload">
+                File to upload:
+                <input type="file" name="file"/><br/> Name:
+                <input
+                    type="text" name="name"/><br/> <br/> <input type="submit"
+                                                               value="Upload"/> Press here to upload the file!
+            </form>
+        </div>
+</body>
+		

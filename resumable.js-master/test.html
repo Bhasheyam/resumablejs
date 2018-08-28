@@ -1,0 +1,72 @@
+<h1> Resumable File Upload to MONGODB</h1>
+<a href="#" id="browseButton">Select files</a>
+<h2>File name</h2>
+<input type="text" id = "filename"></input>
+<h1>Time</h1>	
+Start Time<input type="text" id = "start"></input>
+end Time<input type="text" id = "end"></input> 
+
+
+<script src="resumable.js"></script>
+<script>
+var r = new Resumable({
+  target: 'http://localhost:8080/dbupload',
+  chunkSize:1*1024*1024,
+            simultaneousUploads:4,
+            testChunks: true,
+            throttleProgressCallbacks:1,
+            method: "octet"
+});
+
+
+r.assignBrowse(document.getElementById('browseButton'));
+
+r.on('fileSuccess', function(file){
+    console.debug('fileSuccess',file);
+  });
+r.on('fileProgress', function(file){
+    document.getElementById("filename").value=file.fileName;
+    console.debug('fileProgress', file);
+  });
+r.on('fileAdded', function(file, event){
+    r.upload();
+    console.debug('fileAdded', event);
+  });
+r.on('filesAdded', function(array){
+    r.upload();
+    console.debug('filesAdded', array);
+  });
+r.on('fileRetry', function(file){
+    console.debug('fileRetry', file);
+  });
+r.on('fileError', function(file, message){
+    console.debug('fileError', file, message);
+  });
+r.on('uploadStart', function(){
+     var currentdate = new Date();
+     var time = currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+     document.getElementById("start").value=time;
+    console.debug('uploadStart');
+  });
+r.on('complete', function(){
+    console.debug('complete');
+	var currentdate1 = new Date();
+	var time1 = currentdate1.getHours() + ":" + currentdate1.getMinutes() + ":" + currentdate1.getSeconds();
+    document.getElementById("end").value=time1;
+  });
+r.on('progress', function(){
+    console.debug('progress');
+  });
+r.on('error', function(message, file){
+    console.debug('error', message, file);
+  });
+r.on('pause', function(){
+    console.debug('pause');
+  });
+r.on('cancel', function(){
+    console.debug('cancel');
+  });
+</script>
+
+
+
